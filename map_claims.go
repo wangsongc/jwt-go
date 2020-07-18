@@ -63,8 +63,9 @@ func (m MapClaims) Valid(h *ValidationHelper) error {
 		return &MalformedTokenError{Message: "couldn't parse 'aud' value"}
 	}
 
-	iss, _ := m["iss"].(string)
-	if err = h.ValidateIssuer(iss); err != nil {
+	iss, ok := m["iss"].(string)
+	if m["iss"]!= nil && !ok { return &InvalidIssuerError{Message: "'iss' expected but not present"}
+	} else if err = h.ValidateIssuer(iss); err != nil {
 		vErr = wrapError(err, vErr)
 	}
 
